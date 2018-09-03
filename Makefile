@@ -61,4 +61,13 @@ clean:
 	rm -f lua/*.o lua/lua lua/liblua.a
 	rm -f termbox/src/*.o termbox/src/libtermbox.a
 
+deb:
+	{ find . -name '.git*' | xargs rm -rf; } \
+		&& rm -f termbox/waf \
+		&& { find .. -maxdepth 1 -type f -name 'mle*' | xargs rm -f; } \
+		&& { dh_make -s -y -c apache --createorig || true; } \
+		&& debuild -i -us -uc -S \
+		&& debsign ../mle*.dsc \
+		&& sudo pbuilder --build ../mle*.dsc
+
 .PHONY: all mle_static test test_mle sloc install uscript clean
